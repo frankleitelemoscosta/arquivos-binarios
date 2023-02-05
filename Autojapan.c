@@ -1,9 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include<locale.h>
-#define MAX_CARROS 100
+//bibliotecas
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+	#include<locale.h>
+	#define MAX_CARROS 100
+//fim bibliotecas
 
+//structs
 typedef struct abacatinho
 {
 	char fabricante[100];
@@ -22,45 +25,51 @@ typedef struct azulao
 	int consumo;
 	int ativo;
 }Amarelao;
+//fim structs
+
 
 Amarelao carros[MAX_CARROS];
 
-
-void menu();
-void cadastrar();
-void remover();
-void economico();
-void maiorconsumo();
-void maisnovo();
-void listar();
+//declaração de todas funções do programa
+	void menu();
+	int cadastrar();
+	void remover(int quantidade_de_carros);
+	void economico();
+	void maiorconsumo();
+	void maisnovo();
+	void listar();
+//fim
 
 int main(int argc, char const *argv[])
 {
     setlocale(LC_ALL,"portuguese");
     
-    	Carro goiaba;
+    Carro goiaba;
 	int j=0;
 
-    	FILE *dados;
+    	FILE *dados;//declaração da variavel do arquivo binario
 	
-	dados = fopen("dados.bin","rb");
+	dados = fopen("dados.bin","rb");//abrindo o arquivo e determinando o tipo de ação que será feita com o arquivo
 	
-	while(fread(&goiaba,sizeof(Carro),1,dados))
-	{
-			carros[j].consumo=goiaba.consumo;
-			carros[j].ano=goiaba.ano;
-			strcpy(carros[j].fabricante,goiaba.fabricante);
-			strcpy(carros[j].modelo,goiaba.modelo);
-			carros[j].ativo=goiaba.ativo;
-			j++;
-			
-	}
-	
-	fclose(dados);
+	//pegando informações do arquivo e colocando no programa
+		while(fread(&goiaba,sizeof(Carro),1,dados))
+		{
+				carros[j].consumo=goiaba.consumo;
+				carros[j].ano=goiaba.ano;
+				strcpy(carros[j].fabricante,goiaba.fabricante);
+				strcpy(carros[j].modelo,goiaba.modelo);
+				carros[j].ativo=goiaba.ativo;
+				j++;
+				
+		}
+	//fim
+
+
+	fclose(dados);//fechando o arquivo
 
     
     
-    menu();
+    menu();//para iniciar o programa
     return 0;
 }
 
@@ -68,6 +77,7 @@ void menu()
 {
 
 int opcao;
+int quantidade_de_carros;
 
 	do
 	{
@@ -89,7 +99,7 @@ int opcao;
 	switch(opcao)
 		{
 			case 1:
-				cadastrar();
+				quantidade_de_carros = cadastrar();
 			break;
 			case 2:
 				listar();
@@ -99,7 +109,7 @@ int opcao;
 				return;
 			break;
 			case 3:
-				remover();
+				remover(quantidade_de_carros);
 			break;
 			case 4:
 				economico();
@@ -124,7 +134,7 @@ int opcao;
 }
 
 
-void cadastrar()
+int cadastrar()
 {
 	
 	Carro goiaba;
@@ -175,16 +185,14 @@ void cadastrar()
 			strcpy(carros[j].fabricante,goiaba.fabricante);
 			strcpy(carros[j].modelo,goiaba.modelo);
 			carros[j].ativo=goiaba.ativo;
-			j++;
-			
+			j++;	
 	}
 	
 	fclose(dados);
 	
-	printf("\n O número de carros gravados é: %d, use esse valor para gravar as informações no arquivo caso você remova algum veículo",j);
 	
 
-		
+	return j;
 }
 
 void listar()
@@ -210,7 +218,7 @@ void listar()
 		}
 	}
 }
-void remover()
+void remover(int quantidade_de_carros)
 {
 	char modelo[20];
 
@@ -230,13 +238,14 @@ void remover()
 	Carro goiaba;
 	int numero;
 	
-	printf("Digite o número de carros cadastrados no sistema\n");
-	scanf("%d",&numero);
+	
+	numero = quantidade_de_carros;
 	
 	FILE *dados;
 	
 	dados = fopen("dados.bin","w+b");
-	for(int i=0;i<numero;i++)
+
+	for(int i = 0 ;i < numero; i++)
 	{
 	strcpy(goiaba.fabricante,carros[i].fabricante);
 	strcpy(goiaba.modelo,carros[i].modelo);
@@ -245,6 +254,7 @@ void remover()
 	goiaba.ativo=carros[i].ativo;
 	fwrite(&goiaba,sizeof(Carro),1,dados);
 	}
+
 	fclose(dados);
 
 }
